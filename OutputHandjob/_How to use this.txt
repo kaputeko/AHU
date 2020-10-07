@@ -1,0 +1,10 @@
+In the 'ScreensComp' directory you must place the images that will be 
+used by the script to compose the template with the BBCode 'Screenshot
+Comparison'.
+
+It is essential that the images have names that put the files in order:
+
+source_01
+encode_02
+
+AvsPmod already does this automatically by including the frame as a suffix.
