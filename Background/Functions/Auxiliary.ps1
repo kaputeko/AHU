@@ -534,6 +534,10 @@ function RemoveItens {
   Write-Host "PROCESS COMPLETED " -ForegroundColor Green
   Write-Host " _____________________________________________________________________________________________"
   Write-Host ""
+  Write-Host ""
+  Write-Host " Press any key to continue..."
+  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+}
 }
 
 function InstallSendTo {
