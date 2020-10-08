@@ -1,13 +1,12 @@
 ﻿# Window title
 $esc = [char]27
-"$esc]0;Auto HANDJOB Upload v0.2$esc]0;"
+"$esc]0;Auto HANDJOB Upload v0.2.1$esc]0;"
 
 # LOADING MAIN VARIABLES
 
 # Main folders 
 $MainFolder = (Get-Item $PSScriptRoot).Parent.FullName
 $BackgroundFolder = $PSScriptRoot
-$OutputHandjobFolder = $MainFolder+'\OutputHandjob'
 $ScreensCompFolder = $MainFolder+'\ScreensComp'
 
 # Background Folders
@@ -32,9 +31,22 @@ else {
 . $FunctionsFolder'\Config.ps1'
 
 # Ensures that the HANDJOB folder ends with a \
-if ($folderHandjob -notmatch '$\\')
+if ($folderHandjob[-1] -ne '\')
 {
   $folderHandjob += '\'
+}
+
+# If a custom output folder is not set, the script will use the default.
+
+if (!($customOutputFolder)) {
+  $OutputHandjobFolder = $MainFolder+'\OutputHandjob'
+}else {
+  # Ensures that the HANDJOB folder do not end with \
+  if ($customOutputFolder[-1] -eq '\')
+  {
+    $customOutputFolder = $customOutputFolder.TrimEnd('\\')
+  }
+  $OutputHandjobFolder = $customOutputFolder
 }
 
 # Templates
@@ -47,10 +59,22 @@ $folderHandjobb = $NewfolderHandjob -replace "\\", "/"
 $folderHandjobMK = "/cygdrive/$($folderHandjobb)"
 
 # OutputHandjob mktorrent format
-$TempMainFolder = $MainFolder -replace ":\\", "/"
-$TempMainFolder2 = $TempMainFolder -replace "\\", "/"
-$BaseDirectoryMK = "/cygdrive/$($TempMainFolder2)/"
-$OutputHandjobMK = "$($BaseDirectoryMK)OutputHandjob/"
+if (!($customOutputFolder)) {
+  $TempMainFolder = $MainFolder -replace ":\\", "/"
+  $TempMainFolder2 = $TempMainFolder -replace "\\", "/"
+  $BaseDirectoryMK = "/cygdrive/$($TempMainFolder2)/"
+  $OutputHandjobMK = "$($BaseDirectoryMK)OutputHandjob/"
+}else {
+  # Added the possibility to handle when a custom output folder is defined.
+  $OutputHandjobMKTemp = $customOutputFolder
+  if ($OutputHandjobMKTemp[-1] -ne '\'){
+    $OutputHandjobMKTemp += '\'
+  }
+  $OutputHandjobMK = $OutputHandjobMKTemp -replace ":\\", "/"
+  $OutputHandjobMK = $OutputHandjobMK -replace "\\", "/"
+  $OutputHandjobMK = "/cygdrive/$($OutputHandjobMK)"
+
+}
 
 # Loading file with auxiliary functions
 . $FunctionsFolder'\Auxiliary.ps1'
@@ -66,10 +90,10 @@ $FileName = $args[0]
 $Source = $args[1]
 
 if ($FileName -eq $null) {
-  while ($xMenu -ne 4) {
+  while ($xMenu -ne 5) {
     $FileName = $null
     Banner "CHOOSE AN OPTION"
-    $xMenu = menu -ReturnIndex @("Start a new HANDJOB upload", "Clear output folder", "Change Settings", "Enable the 'Sendo to' feature", "Quit") 
+    $xMenu = menu -ReturnIndex @("Start a new HANDJOB upload", "Clear output folder", "Change Settings", "Enable the 'Sendo to' feature","Create Desktop Shortcut", "Quit") 
     switch ($xMenu) {
       0 { 
           if ((Get-ChildItem -Path $folderHandjob -force | Where-Object Extension -in ('.mkv') | Measure-Object).Count -eq  0) {
@@ -98,9 +122,7 @@ if ($FileName -eq $null) {
               }
               MakeTorrent
               FinalTemplate
-              RemoveItens
-              Write-Host  " Press any key to continue..."
-              $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');    
+              RemoveItens   
             }
 
         }
@@ -118,8 +140,11 @@ if ($FileName -eq $null) {
           Debug -TypeError "sendto"
         }
       4 {
-          (Get-Host).SetShouldExit(0)
+          CreateShortcut
         }
+      5{
+        (Get-Host).SetShouldExit(0)
+      }
       Default {}
     }
   }

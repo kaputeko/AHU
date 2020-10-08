@@ -15,7 +15,7 @@ Write-Host
  | | | | '_ \| |/ _ \ / _`  |/ _ ` |     
  | |_| | |_) | | (_) | (_| | (_| |       
   \___/| .__/|_|\___/ \__,_|\__,_|                                                            
-       |_| v0.2  (c)  Caput
+       |_| v0.2.1  (c)  Caput
  _____________________________________________________________________________________________
 "
 Write-Host " $Title "
@@ -72,6 +72,20 @@ function Debug {
           Banner "CHECKING SCRIPT SETTINGS"
           Write-Host " The path used in the " -nonewline -ForegroundColor red
           Write-Host " folderHandjob " -nonewline -BackgroundColor DarkRed
+          Write-Host " variable does not exist!" -ForegroundColor red
+          Write-Host ""
+          Write-Host -NoNewLine ' Press any key to continue...';
+          $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
+          # Opens the settings file with notepad
+          & notepad.exe "$($FunctionsFolder)\Config.ps1"
+          Exit
+        }
+  
+        # Tests whether you have defined a folder for output and if defined, test whether it exists.
+        elseif (($customOutputFolder) -And (Test-Path -path $customOutputFolder) -eq $false) {
+          Banner "CHECKING SCRIPT SETTINGS"
+          Write-Host " The path used in the " -nonewline -ForegroundColor red
+          Write-Host " customOutputFolder " -nonewline -BackgroundColor DarkRed
           Write-Host " variable does not exist!" -ForegroundColor red
           Write-Host ""
           Write-Host -NoNewLine ' Press any key to continue...';
@@ -588,4 +602,20 @@ function ClearOutupt {
     $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
     Break
   }
+}
+
+function CreateShortcut {
+
+  # Creating the bat shortcut
+  $objShell = New-Object -ComObject WScript.Shell
+  $lnk = $objShell.CreateShortcut("$home\Desktop\AHU.lnk")
+  $lnk.TargetPath = "$($MainFolder)\AHU.bat"
+  $lnk.IconLocation = "$($SendToFolder)\automate-handjob.ico"
+  $lnk.Save()
+  Banner "CREATING SHORTCUT IN DESKTOP"
+  Start-Sleep -Seconds 0.3
+  Write-Host " Shortcut created successfully!" -ForegroundColor Green
+  Write-Host ""
+  Write-Host " Press any key to continue..."
+  $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
 }

@@ -2,7 +2,7 @@
 
 # --- Directories ---
 
-# HANDJOB folder Where are your handjobs encodes. Note that the path must end with a backslash \
+# HANDJOB folder Where are your handjobs encodes.
 # The script seems to work with directories with spaces. But if possible try to avoid.
 # "D:\Encodes\My HANDJOBs\" (OK ...)
 # "D:\Encodes\My_HANDJOBs\" (Much better)
@@ -10,6 +10,16 @@
 # $folderHandjob = "D:\Encodes\HANDJOB\"
 
 $folderHandjob = ""
+
+# Custom Output Folder
+# By default it will save your work in the 'OutputHandjob' folder unless you define a path.
+# The script seems to work with directories with spaces. But if possible try to avoid.
+# "C:\Users\HJ\Desktop\My Out" (OK ...)
+# "C:\Users\HJ\Desktop\My_Out" (Much better)
+# Example:
+# $customOutputFolder = "C:\Users\HJ\Desktop\Out"
+
+$customOutputFolder = ""
 
 # --- Torrent ---
 
