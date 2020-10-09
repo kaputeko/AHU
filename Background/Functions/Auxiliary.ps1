@@ -15,7 +15,7 @@ Write-Host
  | | | | '_ \| |/ _ \ / _`  |/ _ ` |     
  | |_| | |_) | | (_) | (_| | (_| |       
   \___/| .__/|_|\___/ \__,_|\__,_|                                                            
-       |_| v0.2.1  (c)  Caput
+       |_| v0.2.2  (c)  Caput
  _____________________________________________________________________________________________
 "
 Write-Host " $Title "
@@ -557,7 +557,7 @@ function InstallSendTo {
 
   # Creating the bat file
   '@echo off' | Out-File -FilePath "$($SendToFolder)\automate-handjob.bat"
-  'Powershell.exe -executionpolicy remotesigned -File '''+$BackgroundFolder+'\handjob.ps1'' "%~n1.mkv"' | Out-File -FilePath "$($SendToFolder)\automate-handjob.bat" -Append
+  'Powershell.exe -executionpolicy remotesigned -File '''+$MainFolder+'\AHU.ps1'' "%~n1.mkv"' | Out-File -FilePath "$($SendToFolder)\automate-handjob.bat" -Append
   (Get-Content "$($SendToFolder)\automate-handjob.bat" -Raw).Replace("'",'"')|
   Set-Content "$($SendToFolder)\automate-handjob.bat" -Encoding UTF8
 
@@ -603,19 +603,32 @@ function ClearOutupt {
     Break
   }
 }
-
 function CreateShortcut {
 
   # Creating the bat shortcut
+  # Main folders 
+  $MainFolder_Install_Shortcut = $PSScriptRoot.TrimEnd("Background\Functions")
+  $SendToFolder = $PSScriptRoot.TrimEnd("Functions")+"\SendTo"
+
+  # Creating the ps1 shortcut Desktop
   $objShell = New-Object -ComObject WScript.Shell
-  $lnk = $objShell.CreateShortcut("$home\Desktop\AHU.lnk")
-  $lnk.TargetPath = "$($MainFolder)\AHU.bat"
+  $lnk = $objShell.CreateShortcut("$($MainFolder_Install_Shortcut)\AHU.lnk")
+  $lnk.TargetPath = "Powershell.exe"
+  $lnk.Arguments = "-executionpolicy remotesigned -noexit -File $($MainFolder_Install_Shortcut)\AHU.ps1"
   $lnk.IconLocation = "$($SendToFolder)\automate-handjob.ico"
   $lnk.Save()
-  Banner "CREATING SHORTCUT IN DESKTOP"
-  Start-Sleep -Seconds 0.3
-  Write-Host " Shortcut created successfully!" -ForegroundColor Green
+  Banner "INSTALLING SHORTCUT TO THE PROGRAM"
+  # Creating the ps1 shortcut Desktop
+  $objShell = New-Object -ComObject WScript.Shell
+  $lnk = $objShell.CreateShortcut("$home\Desktop\AHU.lnk")
+  $lnk.TargetPath = "Powershell.exe"
+  $lnk.Arguments = "-executionpolicy remotesigned -noexit -File $($MainFolder_Install_Shortcut)\AHU.ps1"
+  $lnk.IconLocation = "$($SendToFolder)\automate-handjob.ico"
+  $lnk.Save()
+  Start-Sleep -Seconds 0.5
+  Write-Host " Shortcut successfully installed!" -ForegroundColor Green
   Write-Host ""
   Write-Host " Press any key to continue..."
   $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown');
-}
+  (Get-Host).SetShouldExit(0)
+  }
