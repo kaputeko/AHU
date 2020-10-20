@@ -1,3 +1,7 @@
+# Window title
+$esc = [char]27
+"$esc]0;Automate HANDJOB Upload v0.23$esc]0;"
+
 function Banner {
   param (
     [Parameter()]
@@ -15,7 +19,7 @@ Write-Host
  | | | | '_ \| |/ _ \ / _`  |/ _ ` |     
  | |_| | |_) | | (_) | (_| | (_| |       
   \___/| .__/|_|\___/ \__,_|\__,_|                                                            
-       |_| v0.2.2  (c)  Caput
+       |_| v0.23  (c)  Caput
  _____________________________________________________________________________________________
 "
 Write-Host " $Title "
@@ -355,14 +359,15 @@ function PixHost {
     
     (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps').Split(",") > $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps2'
     Remove-Item $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps'
-    (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps2') | findstr "show_url" >> $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps'
+    (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps2') | findstr "th_url" >> $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps'
     Remove-Item $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps2'
 
     (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps') | 
-    Foreach-Object {$_ -replace '\\/', "/"} | 
-    Foreach-Object {$_ -replace '"show_url":"', ""} | 
-    Foreach-Object {$_ -replace '"', ""} | 
-    Foreach-Object {$_ -replace 'pixhost.to/show/', "img46.pixhost.to/images/"} | 
+  Foreach-Object {$_ -replace '\\/', "/"} | 
+  Foreach-Object {$_ -replace '"th_url":"', "[img]"} | 
+  Foreach-Object {$_ -replace '"}', "[/img]"} | 
+  Foreach-Object {$_ -replace 'https://t', "https://img"} | 
+  Foreach-Object {$_ -replace 'thumbs', "images"} | 
     Set-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.comps'
     
     #Tests if the comp file contains less than 2 lines.
@@ -383,16 +388,15 @@ function PixHost {
 
   (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg').Split(",") > $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg2'
   Remove-Item $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg'
-  (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg2') | findstr "show_url" >> $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg'
+  (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg2') | findstr "th_url" >> $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg'
   Remove-Item $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg2'
-
   (Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg') | 
   Foreach-Object {$_ -replace '\\/', "/"} | 
-  Foreach-Object {$_ -replace '"show_url":"', "[img]"} | 
-  Foreach-Object {$_ -replace '"', "[/img]"} | 
-  Foreach-Object {$_ -replace 'pixhost.to/show/', "img46.pixhost.to/images/"} | 
+  Foreach-Object {$_ -replace '"th_url":"', "[img]"} | 
+  Foreach-Object {$_ -replace '"}', "[/img]"} | 
+  Foreach-Object {$_ -replace 'https://t', "https://img"} | 
+  Foreach-Object {$_ -replace 'thumbs', "images"} | 
   Set-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg'
-  
   #Tests if the comp file contains less than 2 lines.
   if ((Get-Content $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.ptpimg'| Measure-Object -Line).Lines -lt 4) {
     Write-Host "[ ERROR ]" -ForegroundColor Red

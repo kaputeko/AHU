@@ -1,8 +1,4 @@
-﻿# Window title
-$esc = [char]27
-"$esc]0;Auto HANDJOB Upload v0.2.2$esc]0;"
-
-# LOADING MAIN VARIABLES
+﻿# LOADING MAIN VARIABLES
 
 # Main folders 
 $MainFolder = $PSScriptRoot
