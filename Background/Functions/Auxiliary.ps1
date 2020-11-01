@@ -240,6 +240,7 @@ function CreateFolder {
 }
 
 function GenerateMediainfo {
+  [Console]::OutputEncoding = [Text.UTF8Encoding]::UTF8
   # Generates the mediainfo file of the movie already formatted with just the name
   Write-Host " $(Get-Date -format 'dd-MM-yyyy HH:mm:ss') - Generating mediainfo " -nonewline
   & $mediainfo $folderHandjob$FileName >> $OutputHandjobFolder'\'$FileNameMod'\'$FileNameMod'.mediainfo'
